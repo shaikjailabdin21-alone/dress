@@ -1,0 +1,2 @@
+import ContentPage from '../components/common/ContentPage.jsx';
+export default function PrivacyPolicy() { return <ContentPage title="Privacy policy"><p>We use the details you share with us only to respond to enquiries and coordinate orders. This storefront keeps shopping bag selections in your browser storage. It does not submit checkout or payment details.</p><p>For a privacy request, contact us through our Contact page.</p></ContentPage>; }

@@ -1,0 +1,11 @@
+import { Router } from 'express';
+import { createCollection, deleteCollection, listCollections, updateCollection } from '../controllers/collectionController.js';
+import { requireAdmin } from '../middleware/authMiddleware.js';
+import { asyncHandler } from '../middleware/asyncHandler.js';
+const router = Router();
+router.get('/', asyncHandler(listCollections));
+router.get('/admin/all', requireAdmin, asyncHandler(listCollections));
+router.post('/', requireAdmin, asyncHandler(createCollection));
+router.put('/:id', requireAdmin, asyncHandler(updateCollection));
+router.delete('/:id', requireAdmin, asyncHandler(deleteCollection));
+export default router;

@@ -1,0 +1,11 @@
+import { Router } from 'express';
+import { createCategory, deleteCategory, listCategories, updateCategory } from '../controllers/categoryController.js';
+import { requireAdmin } from '../middleware/authMiddleware.js';
+import { asyncHandler } from '../middleware/asyncHandler.js';
+const router = Router();
+router.get('/', asyncHandler(listCategories));
+router.get('/admin/all', requireAdmin, asyncHandler(listCategories));
+router.post('/', requireAdmin, asyncHandler(createCategory));
+router.put('/:id', requireAdmin, asyncHandler(updateCategory));
+router.delete('/:id', requireAdmin, asyncHandler(deleteCategory));
+export default router;

@@ -1,0 +1,2 @@
+import ContentPage from '../components/common/ContentPage.jsx';
+export default function TermsConditions() { return <ContentPage title="Terms and conditions"><p>Product availability and pricing are confirmed with you before an order is accepted. Product colours may vary slightly by screen. Contact us for delivery, payment, returns and sizing information before placing an order.</p><p>Browsing this site does not create a confirmed purchase.</p></ContentPage>; }
