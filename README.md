@@ -13,3 +13,4 @@ React/Vite storefront and Express/Mongoose API. Product images are uploaded dire
 The API connects to the `al_nisa_collections` database. Product uploads and catalogue editing require MongoDB Atlas and Cloudinary credentials. No product fixtures are generated. The API allows only the exact origins listed in `FRONTEND_ORIGINS`; it accepts credentialed requests and browser preflights.
 
 For LAN access, set `frontend/.env`'s `VITE_API_URL` to `http://<backend-LAN-IP>:4000/api` and include the browser URL (such as `http://<frontend-LAN-IP>:5173`) in `FRONTEND_ORIGINS`. The Vite dev server and API bind on all interfaces. LAN addresses can change when the machine reconnects or DHCP leases expire; check the current address with `ip -4 addr` and update both env files, then restart both servers. For local-only use, use `http://localhost:5173` in `FRONTEND_ORIGINS` and `http://localhost:4000/api` for `VITE_API_URL`.
+# dress
