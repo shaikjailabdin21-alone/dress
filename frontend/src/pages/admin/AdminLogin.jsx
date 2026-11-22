@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { Link, Navigate, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext.jsx';
 
-function messageOf(error) { return error.response?.data?.message || 'Could not complete this request.'; }
+function messageOf(error) { return error.response?.data?.message || (error.isApiUnavailable ? error.message : 'Could not complete this request.'); }
 export default function AdminLogin() {
   const { admin, ready, login } = useAuth(); const navigate = useNavigate(); const [error, setError] = useState(''); const [busy, setBusy] = useState(false);
   if (ready && admin) return <Navigate to="/admin" replace/>;
