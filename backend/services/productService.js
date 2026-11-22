@@ -16,8 +16,15 @@ export async function normalizeProduct(body, existing = {}) {
   if (!process.env.CLOUDINARY_CLOUD_NAME || images.some(image => !String(image.publicId).startsWith('al-nisa/products/') || !String(image.url).startsWith(cloudinaryOrigin))) throw Object.assign(new Error('Product photos must be confirmed images from this Cloudinary account.'), { statusCode: 400 });
   const category = await Category.findOne({ _id: body.category ?? existing.category, isActive: true });
   if (!category) throw Object.assign(new Error('Select an active category.'), { statusCode: 400 });
-  const collectionId = body.collection === '' ? null : (body.collection ?? existing.collection);
-  if (collectionId && !await Collection.exists({ _id: collectionId, isActive: true })) throw Object.assign(new Error('Select an active collection.'), { statusCode: 400 });
+  const collectionIds = Array.isArray(body.collections)
+    ? [...new Set(body.collections.map(String).map(id => id.trim()).filter(Boolean))]
+    : [body.collection === '' ? null : (body.collection ?? existing.collection)].filter(Boolean).map(String);
+  const previouslyAssigned = new Set([existing.collection, ...(existing.collections || [])].filter(Boolean).map(String));
+  for (const id of collectionIds) {
+    const collection = await Collection.findById(id).select('_id isActive');
+    if (!collection || (!collection.isActive && !previouslyAssigned.has(String(collection._id)))) throw Object.assign(new Error('Select active collections.'), { statusCode: 400 });
+  }
+  const collectionId = collectionIds[0] || null;
   const slugBase = slugify(String(body.slug || name), { lower: true, strict: true }) || 'product';
   let slug = slugBase, suffix = 2;
   while (await Product.exists({ slug, ...(existing._id ? { _id: { $ne: existing._id } } : {}) })) slug = `${slugBase}-${suffix++}`;
@@ -28,7 +35,8 @@ export async function normalizeProduct(body, existing = {}) {
   return {
     name, slug, description: String(body.description ?? existing.description ?? '').trim().slice(0, 5000),
     price, compareAtPrice,
-    images, category: category._id, collection: collectionId || null,
+    images, category: category._id, collection: collectionId,
+    collections: collectionIds,
     sizes: Array.isArray(body.sizes) ? body.sizes.map(String).map(x => x.trim()).filter(Boolean).slice(0, 30) : (existing.sizes || []),
     colors: Array.isArray(body.colors) ? body.colors.map(String).map(x => x.trim()).filter(Boolean).slice(0, 30) : (existing.colors || []),
     stock,

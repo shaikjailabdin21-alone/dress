@@ -11,9 +11,17 @@ async function uniqueSlug(name, id) {
 }
 export async function listCollections(req, res) {
   const collections = await Collection.find(req.admin ? {} : { isActive: true }).sort({ createdAt: -1 }).lean();
-  const products = collections.length ? await Product.find({ collection: { $in: collections.map(item => item._id) }, isActive: true }).select('name slug price images collection isNewArrival isFeatured').lean() : [];
+  const collectionIds = collections.map(item => item._id);
+  const linkedProductIds = collections.flatMap(item => item.products || []);
+  const products = collectionIds.length ? await Product.find({ $and: [
+    { $or: [{ isActive: true }, { isActive: { $exists: false } }] },
+    { $or: [{ collection: { $in: collectionIds } }, { _id: { $in: linkedProductIds } }] },
+  ] }).select('name slug description price compareAtPrice images category collection isNewArrival isFeatured stock').populate('category', 'name slug').lean() : [];
   const grouped = new Map(collections.map(item => [String(item._id), []]));
-  for (const product of products) grouped.get(String(product.collection))?.push(product);
+  for (const item of collections) {
+    const linked = new Set((item.products || []).map(String));
+    grouped.set(String(item._id), products.filter(product => String(product.collection) === String(item._id) || linked.has(String(product._id))));
+  }
   res.json({ collections: collections.map(item => ({ ...item, products: grouped.get(String(item._id)) || [] })) });
 }
 export async function createCollection(req, res) {
