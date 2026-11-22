@@ -21,7 +21,7 @@ export default function AdminDashboard() {
   const refresh = async () => { const [p, c, k, s] = await Promise.all([productService.getAdminProducts(), productService.getCategories(true), productService.getCollections(true), productService.getDashboardStats()]); setProducts(p); setCategories(c); setCollections(k); setStats(s); await refreshCategories(); };
   useEffect(() => { refresh().catch(err => setError(messageOf(err))); }, []);
   const patch = (key, value) => setForm(prev => ({ ...prev, [key]: value }));
-  const edit = p => { setEditing(p._id); setFiles([]); setForm({ ...blankProduct, ...p, category: p.category?._id || '', collection: p.collection?._id || '', sizes: (p.sizes || []).join(', '), colors: (p.colors || []).join(', ') }); window.scrollTo({ top: 0, behavior: 'smooth' }); };
+  const edit = p => { setEditing(p._id); setFiles([]); const assignedCollections = p.collections?.length ? p.collections.map(collection => collection._id) : p.collection?._id ? [p.collection._id] : []; setForm({ ...blankProduct, ...p, category: p.category?._id || '', collection: assignedCollections[0] || '', collections: assignedCollections, sizes: (p.sizes || []).join(', '), colors: (p.colors || []).join(', ') }); window.scrollTo({ top: 0, behavior: 'smooth' }); };
   const reset = () => { setEditing(''); setFiles([]); setForm(blankProduct); };
   const save = async event => {
     event.preventDefault(); if (busy) return; setBusy(true); setError(''); setNotice(''); let uploadedImages = [];
