@@ -6,7 +6,7 @@ import { isEmail } from '../utils/validators.js';
 export async function adminLogin(req, res) {
   const email = String(req.body.email || '').trim().toLowerCase();
   const password = String(req.body.password || '');
-  if (!isEmail(email) || email.length > 254 || !password || password.length > 200) return res.status(400).json({ message: 'Enter a valid email and password.' });
+  if (!isEmail(email) || email.length > 254 || !password || Buffer.byteLength(password, 'utf8') > 72) return res.status(400).json({ message: 'Enter a valid email and password (passwords may contain at most 72 UTF-8 bytes).' });
   const admin = await Admin.findOne({ email, isActive: true }).select('+passwordHash');
   if (!admin || !await bcrypt.compare(password, admin.passwordHash)) return res.status(401).json({ message: 'Email or password is incorrect.' });
   const token = generateAdminToken(admin);

@@ -1,11 +1,11 @@
 import './loadEnv.js';
 
 const frontendOrigins = [...new Set(
-  (process.env.FRONTEND_ORIGINS || '').split(',').map(origin => origin.trim()).filter(Boolean)
+  (process.env.FRONTEND_ORIGINS || process.env.FRONTEND_URL || '').split(',').map(origin => origin.trim()).filter(Boolean)
 )];
 
 if (frontendOrigins.length === 0) {
-  throw new Error('FRONTEND_ORIGINS must contain at least one allowed origin');
+  throw new Error('Set FRONTEND_ORIGINS or FRONTEND_URL to at least one allowed browser origin');
 }
 
 for (const origin of frontendOrigins) {

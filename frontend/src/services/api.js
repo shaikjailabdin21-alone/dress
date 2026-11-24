@@ -12,7 +12,9 @@ api.interceptors.response.use(undefined, (error) => {
   const proxyUnavailable = error.response?.status >= 500 && !error.response.data?.message;
   if (!error.response || error.code === 'ERR_NETWORK' || proxyUnavailable) {
     error.isApiUnavailable = true;
-    error.message = 'Unable to reach the AL API. Check that the backend is running on port 4000.';
+    error.message = import.meta.env.DEV
+      ? 'Unable to reach the AL API. Check that the backend is running on port 4000.'
+      : 'Unable to reach the AL API. Check the API URL configured for this site.';
   }
   return Promise.reject(error);
 });
