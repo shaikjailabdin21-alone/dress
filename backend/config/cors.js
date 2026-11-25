@@ -5,18 +5,15 @@ const rawOrigins = (process.env.FRONTEND_ORIGINS || process.env.FRONTEND_URL || 
   .map(origin => origin.trim().replace(/\/+$/, ''))
   .filter(Boolean);
 
-// Default development and production origins
+// Default development origins if none specified
 const defaultOrigins = [
   'http://localhost:5173',
   'http://127.0.0.1:5173',
   'http://localhost:3000',
   'http://localhost:4173',
-  'https://alnisa-collections.netlify.app',
 ];
 
-const frontendOrigins = rawOrigins.length > 0
-  ? [...new Set([...rawOrigins, 'https://alnisa-collections.netlify.app'])]
-  : defaultOrigins;
+const frontendOrigins = rawOrigins.length > 0 ? [...new Set(rawOrigins)] : defaultOrigins;
 
 // Validate configured origins (skip validation for wildcard '*')
 for (const origin of frontendOrigins) {
