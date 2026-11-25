@@ -13,7 +13,7 @@ export async function normalizeProduct(body, existing = {}) {
   if (!Number.isFinite(price) || price < 0) throw Object.assign(new Error('A valid non-negative price is required.'), { statusCode: 400 });
   if (!Array.isArray(images) || images.length < 1 || images.length > 10 || images.some(i => !i?.url || !i?.publicId)) throw Object.assign(new Error('Add 1 to 10 valid Cloudinary images.'), { statusCode: 400 });
   const cloudinaryOrigin = `https://res.cloudinary.com/${process.env.CLOUDINARY_CLOUD_NAME}/image/upload/`;
-  if (!process.env.CLOUDINARY_CLOUD_NAME || images.some(image => !String(image.publicId).startsWith('al-nisa/products/') || !String(image.url).startsWith(cloudinaryOrigin))) throw Object.assign(new Error('Product photos must be confirmed images from this Cloudinary account.'), { statusCode: 400 });
+  if (!process.env.CLOUDINARY_CLOUD_NAME || images.some(image => !String(image.publicId).startsWith('al-nisa/products/') || !String(image.url).replace(/^http:/, 'https:').startsWith(cloudinaryOrigin))) throw Object.assign(new Error('Product photos must be confirmed images from this Cloudinary account.'), { statusCode: 400 });
   const category = await Category.findOne({ _id: body.category ?? existing.category, isActive: true });
   if (!category) throw Object.assign(new Error('Select an active category.'), { statusCode: 400 });
   const collectionIds = Array.isArray(body.collections)

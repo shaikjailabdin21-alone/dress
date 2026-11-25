@@ -60,7 +60,11 @@ export async function listProducts(req, res) {
 export async function getProduct(req, res) {
   res.set('Cache-Control', 'no-store');
   const id = req.params.id;
-  const product = await Product.findOne({ ...(mongoose.isValidObjectId(id) ? { _id: id } : { slug: id }), $or: [{ isActive: true }, { isActive: { $exists: false } }] }).select(fields).populate('category', 'name slug').populate('collection', 'name slug').lean();
+  const isObjectId = mongoose.isValidObjectId(id);
+  const product = await Product.findOne({
+    ...(isObjectId ? { $or: [{ _id: id }, { slug: id }] } : { slug: id }),
+    $or: [{ isActive: true }, { isActive: { $exists: false } }],
+  }).select(fields).populate('category', 'name slug').populate('collection', 'name slug').lean();
   if (!product) return res.status(404).json({ message: 'Product not found.' });
   const relatedFilter = { _id: { $ne: product._id }, $or: [{ isActive: true }, { isActive: { $exists: false } }] };
   if (product.category?._id || product.category) relatedFilter.category = product.category?._id || product.category;
