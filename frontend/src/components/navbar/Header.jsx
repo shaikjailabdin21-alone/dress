@@ -8,7 +8,7 @@ export default function Header() {
     <button className="menu-toggle" aria-label="Toggle menu" onClick={() => setOpen(!open)}>☰</button>
     <Link className="brand" to="/"><img src="/images/al-nisa-collections-logo.png" alt="AL NISA COLLECTIONS"/><span>AL NISA<small>COLLECTIONS</small></span></Link>
     <nav className={open ? 'main-nav open' : 'main-nav'} onClick={() => setOpen(false)}>
-      <NavLink end to="/">Home</NavLink><NavLink to="/shop">Shop all</NavLink><NavLink to="/new-arrivals">New arrivals</NavLink><NavLink to="/featured">Featured</NavLink><NavLink to="/collections">Collections</NavLink><NavLink to="/about">Our story</NavLink>
+      <NavLink end to="/">Home</NavLink><NavLink to="/shop">Shop all</NavLink><NavLink to="/new-arrivals">New arrivals</NavLink><NavLink to="/featured">Featured</NavLink><NavLink to="/collections">Collections</NavLink><NavLink to="/about">About Us</NavLink>
     </nav>
     <div className="header-actions"><Link to="/search" aria-label="Search products">⌕</Link><Link to="/cart" aria-label="Shopping bag">♧<i>{count}</i></Link></div>
   </header></>;
