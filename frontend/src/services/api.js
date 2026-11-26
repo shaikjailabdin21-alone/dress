@@ -1,8 +1,6 @@
 import axios from 'axios';
 
-let rawBaseURL = (import.meta.env.VITE_API_URL || '/api').trim().replace(/\/+$/, '');
-// Ensure baseURL includes /api so all endpoints align with backend routes
-const apiBaseURL = rawBaseURL.endsWith('/api') ? rawBaseURL : `${rawBaseURL}/api`;
+const apiBaseURL = "https://dress-dyo9.onrender.com/api";
 
 const api = axios.create({ baseURL: apiBaseURL, withCredentials: true });
 
